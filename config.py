@@ -47,6 +47,8 @@ class Settings(BaseSettings):
     default_provider: str = Field(default="ollama", alias="DEFAULT_PROVIDER")
     default_model: str | None = Field(default=None, alias="DEFAULT_MODEL")
     log_level: str = Field(default="info", alias="LOG_LEVEL")
+    log_requests: bool = Field(default=False, alias="LOG_REQUESTS")
+    log_requests_file: str | None = Field(default=None, alias="LOG_REQUESTS_FILE")
 
     max_concurrent_requests: int = Field(
         default=200, alias="MAX_CONCURRENT_REQUESTS", ge=1

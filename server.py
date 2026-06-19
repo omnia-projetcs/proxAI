@@ -24,6 +24,7 @@ from proxai.providers import get_provider
 from proxai.providers.base import ProviderError
 from proxai.providers.registry import close_http_client
 from proxai.router import resolve_route
+from proxai import req_logger
 
 logger = logging.getLogger(__name__)
 
@@ -161,7 +162,7 @@ def create_app() -> FastAPI:
 
     @app.post("/v1/chat/completions")
     @app.post("/chat/completions")
-    async def chat_completions(request: ChatCompletionRequest):
+    async def chat_completions(request: ChatCompletionRequest, raw_request: Request):
         settings = get_settings()
         route = resolve_route(request.model, settings)
         provider = get_provider(route.provider, settings)
@@ -181,8 +182,20 @@ def create_app() -> FastAPI:
             "X-ProxAI-Model": route.model,
         }
 
+        client_ip = req_logger.get_client_ip(raw_request)
+
         if request.stream:
             stream = wrap_stream_with_slot(provider.chat_completions_stream(body))
+            if settings.log_requests:
+                stream = req_logger.wrap_stream_for_logging(
+                    stream=stream,
+                    settings=settings,
+                    ip=client_ip,
+                    client_model=request.model,
+                    provider=route.provider,
+                    model=route.model,
+                    messages=request.messages,
+                )
             return StreamingResponse(
                 stream,
                 media_type="text/event-stream",
@@ -195,13 +208,24 @@ def create_app() -> FastAPI:
 
         async with acquire_request_slot():
             result = await provider.chat_completions(body)
+            if settings.log_requests:
+                req_logger.log_chat_request(
+                    settings=settings,
+                    ip=client_ip,
+                    client_model=request.model,
+                    provider=route.provider,
+                    model=route.model,
+                    messages=request.messages,
+                    response=result,
+                )
             return JSONResponse(content=result, headers=headers)
 
     @app.post("/v1/embeddings")
     @app.post("/embeddings")
-    async def embeddings(request: EmbeddingRequest):
+    async def embeddings(request: EmbeddingRequest, raw_request: Request):
         settings = get_settings()
         route = resolve_route(request.model, settings)
+        client_ip = req_logger.get_client_ip(raw_request)
 
         async with acquire_request_slot():
             provider = get_provider(route.provider, settings)
@@ -209,6 +233,16 @@ def create_app() -> FastAPI:
             body["model"] = route.model
 
             result = await provider.embeddings(body)
+            if settings.log_requests:
+                req_logger.log_embeddings_request(
+                    settings=settings,
+                    ip=client_ip,
+                    client_model=request.model,
+                    provider=route.provider,
+                    model=route.model,
+                    input_data=request.input,
+                    response=result,
+                )
             return JSONResponse(
                 content=result,
                 headers={
