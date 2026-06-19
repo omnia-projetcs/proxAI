@@ -30,6 +30,7 @@ OPENAI_COMPAT_PROVIDERS = frozenset(
         "xai",
         "cohere",
         "nvidia",
+        "qwen",
     }
 )
 
@@ -50,6 +51,7 @@ KEYED_PROVIDERS: list[tuple[str, str]] = [
     ("perplexity", "perplexity_api_key"),
     ("xai", "xai_api_key"),
     ("nvidia", "nvidia_api_key"),
+    ("qwen", "qwen_api_key"),
 ]
 
 

@@ -28,6 +28,7 @@ PROVIDER_NAMES = frozenset(
         "perplexity",
         "xai",
         "nvidia",
+        "qwen",
     }
 )
 
@@ -66,6 +67,12 @@ class Settings(BaseSettings):
     openai_api_key: str | None = Field(default=None, alias="OPENAI_API_KEY")
     openai_base_url: str = Field(
         default="https://api.openai.com/v1", alias="OPENAI_BASE_URL"
+    )
+
+    qwen_api_key: str | None = Field(default=None, alias="QWEN_API_KEY")
+    qwen_base_url: str = Field(
+        default="https://dashscope.aliyuncs.com/compatible-mode/v1",
+        alias="QWEN_BASE_URL",
     )
 
     anthropic_api_key: str | None = Field(default=None, alias="ANTHROPIC_API_KEY")
@@ -208,6 +215,7 @@ class Settings(BaseSettings):
             "perplexity": (self.perplexity_api_key, self.perplexity_base_url),
             "xai": (self.xai_api_key, self.xai_base_url),
             "nvidia": (self.nvidia_api_key, self.nvidia_base_url),
+            "qwen": (self.qwen_api_key, self.qwen_base_url),
         }
         return mapping.get(provider, (None, ""))
 

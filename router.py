@@ -27,6 +27,7 @@ MODEL_HINTS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"^command-", re.I), "cohere"),
     (re.compile(r"^grok-", re.I), "xai"),
     (re.compile(r"^sonar", re.I), "perplexity"),
+    (re.compile(r"^qwen", re.I), "qwen"),
 ]
 
 

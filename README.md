@@ -15,7 +15,6 @@ One endpoint for all your LLM clients (OpenAI SDK, Cursor, LangChain, Continue, 
 ## Installation
 
 **Requirements:** Python 3.10+
-**Tags:** `llm` `proxy` `openai-api` `ollama` `vllm` `nvidia-nim` `groq` `mistral` `fastapi` `python` `ai-gateway` `llm-router`
 
 ### 1. Clone the repository
 
@@ -90,7 +89,6 @@ pip install -e .
 ```bash
 source .venv/bin/activate      # activate venv if not already active
 cp .env_example .env           # add your API keys
-proxai
 ```
 
 Server runs at **http://localhost:8080** by default.
@@ -99,7 +97,7 @@ Alternative run (without CLI entry point):
 
 ```bash
 source .venv/bin/activate
-python -m proxai.main --port 8080
+python main.py --port 8080
 ```
 
 ---
@@ -121,6 +119,7 @@ GROQ_API_KEY=gsk_...
 MISTRAL_API_KEY=...
 NVIDIA_API_KEY=nvapi-...
 OPENAI_API_KEY=sk-...
+QWEN_API_KEY=...
 ```
 
 | Variable | Description |
@@ -169,6 +168,11 @@ client.chat.completions.create(
     model="nvidia/meta/llama3-8b-instruct",
     messages=[{"role": "user", "content": "Hello!"}],
 )
+
+client.chat.completions.create(
+    model="qwen/qwen-max",
+    messages=[{"role": "user", "content": "Hello!"}],
+)
 ```
 
 ### curl
@@ -197,9 +201,10 @@ curl http://localhost:8080/health
 | `provider/model` | `mistral/mistral-large-latest` | Mistral |
 | `provider/model` | `nvidia/meta/llama3-8b-instruct` | NVIDIA NIM |
 | `provider/model` | `openai/gpt-4o` | OpenAI |
+| `provider/model` | `qwen/qwen-max` | Qwen |
 | `default` | — | Uses `DEFAULT_MODEL` from `.env` |
 
-Auto-detection (no prefix) works for common names: `gpt-*` → OpenAI, `claude-*` → Anthropic, `mistral-*` → Mistral, `llama-3*` → Groq, `meta/llama*` → NVIDIA.
+Auto-detection (no prefix) works for common names: `gpt-*` → OpenAI, `claude-*` → Anthropic, `mistral-*` → Mistral, `llama-3*` → Groq, `meta/llama*` → NVIDIA, `qwen*` → Qwen.
 
 ---
 
@@ -209,9 +214,10 @@ Auto-detection (no prefix) works for common names: `gpt-*` → OpenAI, `claude-*
 |---|---|---|
 | Ollama | Local | No |
 | vLLM | Local | No |
-| **NVIDIA NIM** | Cloud / local | `NVIDIA_API_KEY` |
-| **Groq** | Cloud | `GROQ_API_KEY` |
-| **Mistral** | Cloud | `MISTRAL_API_KEY` |
+| NVIDIA NIM | Cloud / local | `NVIDIA_API_KEY` |
+| Groq | Cloud | `GROQ_API_KEY` |
+| Mistral | Cloud | `MISTRAL_API_KEY` |
+| Qwen | Cloud | `QWEN_API_KEY` |
 | OpenAI | Cloud | `OPENAI_API_KEY` |
 | Anthropic | Cloud | `ANTHROPIC_API_KEY` |
 | Google Gemini | Cloud | `GOOGLE_API_KEY` |
@@ -236,6 +242,10 @@ Fast inference for open models. Example models: `llama-3.3-70b-versatile`, `mixt
 ### Mistral
 
 Official Mistral API. Example models: `mistral-large-latest`, `mistral-small-latest`, `codestral-latest`.
+
+### Qwen
+
+Official DashScope Qwen API. Example models: `qwen-max`, `qwen-plus`, `qwen-turbo`.
 
 ---
 
