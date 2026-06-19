@@ -20,7 +20,7 @@ One endpoint for all your LLM clients (OpenAI SDK, Cursor, LangChain, Continue, 
 ### 1. Clone the repository
 
 ```bash
-git clone [https://github.com/omnia-projetcs/proxAI.git](https://github.com/omnia-projetcs/proxAI.git)
+git clone https://github.com/omnia-projetcs/proxAI.git
 cd proxAI
 ```
 
