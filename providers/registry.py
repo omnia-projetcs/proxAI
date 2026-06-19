@@ -78,7 +78,12 @@ def active_providers(settings: Settings) -> list[str]:
         known = _all_known_providers(settings)
         return [p for p in settings.enabled_providers if p in known]
 
-    providers: list[str] = list(LOCAL_PROVIDERS)
+    providers: list[str] = []
+    if settings.ollama_base_url:
+        providers.append("ollama")
+    if settings.vllm_base_url:
+        providers.append("vllm")
+
     for name, attr in KEYED_PROVIDERS:
         if getattr(settings, attr, None):
             providers.append(name)
@@ -86,12 +91,18 @@ def active_providers(settings: Settings) -> list[str]:
 
 
 def _is_local_backend(base_url: str) -> bool:
+    if not base_url:
+        return False
     host = base_url.lower()
     return any(token in host for token in ("localhost", "127.0.0.1", "0.0.0.0"))
 
 
 def _all_known_providers(settings: Settings) -> set[str]:
-    known = set(LOCAL_PROVIDERS)
+    known = set()
+    if settings.ollama_base_url:
+        known.add("ollama")
+    if settings.vllm_base_url:
+        known.add("vllm")
     for name, attr in KEYED_PROVIDERS:
         if getattr(settings, attr, None):
             known.add(name)
@@ -104,8 +115,12 @@ def get_provider(provider_name: str, settings: Settings) -> BaseProvider:
     client = get_http_client(settings)
 
     if name == "ollama":
+        if not settings.ollama_base_url:
+            raise ProviderError(401, "Ollama n'est pas configuré. Définissez OLLAMA_BASE_URL dans .env")
         return OllamaProvider(None, settings.ollama_base_url, client)
     if name == "vllm":
+        if not settings.vllm_base_url:
+            raise ProviderError(401, "vLLM n'est pas configuré. Définissez VLLM_BASE_URL dans .env")
         return VLLMProvider(None, settings.vllm_base_url, client)
     if name == "anthropic":
         return AnthropicProvider(api_key, settings.anthropic_base_url, client)

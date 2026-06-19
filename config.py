@@ -58,10 +58,10 @@ class Settings(BaseSettings):
         default_factory=list, alias="ENABLED_PROVIDERS"
     )
 
-    ollama_base_url: str = Field(
-        default="http://localhost:11434", alias="OLLAMA_BASE_URL"
+    ollama_base_url: str | None = Field(
+        default=None, alias="OLLAMA_BASE_URL"
     )
-    vllm_base_url: str = Field(default="http://localhost:8000", alias="VLLM_BASE_URL")
+    vllm_base_url: str | None = Field(default=None, alias="VLLM_BASE_URL")
 
     openai_api_key: str | None = Field(default=None, alias="OPENAI_API_KEY")
     openai_base_url: str = Field(

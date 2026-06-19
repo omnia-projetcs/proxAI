@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "proxai"
+version = "0.2.1"
+description = "Proxy transparent OpenAI-compatible pour Ollama, vLLM et providers cloud"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "httpx>=0.28.0",
+    "python-dotenv>=1.0.0",
+    "pydantic>=2.10.0",
+    "pydantic-settings>=2.6.0",
+]
+
+[project.scripts]
+proxai = "proxai.main:cli"
+
+[tool.setuptools]
+packages = ["proxai", "proxai.providers"]
+package-dir = {"proxai" = "."}

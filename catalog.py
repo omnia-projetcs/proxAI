@@ -44,7 +44,10 @@ class ModelCatalog:
             all_models: list[dict[str, Any]] = []
             for name, result in zip(providers, results):
                 if isinstance(result, Exception):
-                    logger.warning("Énumération %s échouée: %s", name, result)
+                    if isinstance(result, ProviderError) and result.status_code == 502:
+                        logger.info("Provider %s non disponible (non configuré ou non démarré)", name)
+                    else:
+                        logger.warning("Énumération %s échouée: %s", name, result)
                     continue
                 all_models.extend(result)
 

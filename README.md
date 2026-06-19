@@ -12,17 +12,10 @@ One endpoint for all your LLM clients (OpenAI SDK, Cursor, LangChain, Continue, 
 
 ---
 
-## GitHub topics
-
-Suggested tags for this repository:
-
-`llm` `proxy` `openai-api` `ollama` `vllm` `nvidia-nim` `groq` `mistral` `fastapi` `python` `ai-gateway` `llm-router`
-
----
-
 ## Installation
 
 **Requirements:** Python 3.10+
+**Tags:** `llm` `proxy` `openai-api` `ollama` `vllm` `nvidia-nim` `groq` `mistral` `fastapi` `python` `ai-gateway` `llm-router`
 
 ### 1. Clone the repository
 
